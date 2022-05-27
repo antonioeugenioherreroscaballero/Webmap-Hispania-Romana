@@ -1,0 +1,46 @@
+@charset "UTF-8";
+
+body {
+    padding: 0;
+    margin: 0;
+}
+ 
+html, body, #map {
+    height: 97%;    
+}
+ 
+
+#header {
+    color: #A52438;
+    background-color: #DBB875;
+    height: 70px;
+    text-align: center;
+    font-family: 'Caesar Dressing', cursive;
+    font-size: 60px; 
+}
+
+        
+.leaflet-popup-content {
+     background: #FFF0D2;
+     color: #333;
+     text-align: center;
+     width: 220px;
+	} 
+
+.leaflet-popup-content-wrapper {
+	background: #FFE3AF;	
+      }
+
+.leaflet-popup-tip {
+      background: #FFE3AF;		
+    }
+
+#botonera {
+   background-color: #DBB875;
+}
+
+.leyendaestilo {
+    opacity: 0.8;
+  
+}
+

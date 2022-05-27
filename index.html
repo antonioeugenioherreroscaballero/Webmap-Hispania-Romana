@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>	
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Hispania Romana</title>
+	
+	<link href="https://fonts.googleapis.com/css?family=Caesar+Dressing" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    
+    <!-- esri -->
+    <script src="https://unpkg.com/esri-leaflet@2.0.8"></script>
+    
+    <!--GeoJSON -->
+    <script type="text/javascript" src="JS/ProvinciasRomanas.js"></script>
+    <script type="text/javascript" src="JS/capitalesromanas.js"></script>
+	<script type="text/javascript" src="JS/yacimientos.js"></script>
+
+    <!--CSS estilo -->
+    <link rel="stylesheet" href="CSS/estilo_optativo.css"/>	
+	
+	<!--MarkerCluster -->
+	<link rel="stylesheet" href="Plugins/MarkerCluster/MarkerCluster.css" />
+	<link rel ="stylesheet" href="Plugins/MarkerCluster/MarkerCluster.Default.css"/>
+	<script src="Plugins/MarkerCluster/leaflet.markercluster.js"></script>
+	
+	<!--Búsquedas -->
+    <script src ="Plugins/Search/src/leaflet-search.js"></script>
+    <link rel="stylesheet" href ="Plugins/Search/src/leaflet-search.css">
+	
+	<!--Imprimir -->
+	<script src="Plugins/Print/bundle.js"></script>
+	<!-- Control de capas  -->
+	<script src="Plugins/StyledLayer/src/styledLayerControl.js"></script>
+	<link rel="stylesheet" href="Plugins/StyledLayer/css/styledLayerControl.css">
+	<!-- Sidebar -->
+ 	<script src="Plugins/Sidebar/L.Control.Sidebar.js"></script>
+ 	<link rel="stylesheet" href="Plugins/Sidebar/L.Control.Sidebar.css">
+	<!-- SHP -->
+	<script src="Plugins/Shapefile/leaflet.shpfile.js"></script>
+	<script src="Plugins/Shapefile/shp.js"></script>
+	<!-- MakiMarkers -->
+ 	<script src ="Plugins/MakiMarkers/Leaflet.MakiMarkers.js"></script>
+
+
+</head>
+<body>
+	
+	<div id= "header"> Hispania Romana </div>
+	<div id = "botonera">
+                    <button id = "Tarraco">Tarraco</button>
+                    <button id = "Emerita Augusta">Emerita Augusta</button>
+                    <button id = "Corduba">Corduba</button>
+	</div>
+    <div id="map"></div> 
+	
+<div id="sidebar">
+        <h1>Hispania Romana</h1>
+        
+        <p class="lorem">Se conoce como Hispania Romana a los territorios de la península ibérica durante el periodo histórico de dominación romana.
+        Este periodo se encuentra comprendido entre 218 a.C. (fecha del desembarco romano en Ampurias) y los principios del siglo V (cuando entran los visigodos en la Península, sustituyendo a la autoridad de Roma). A lo largo de este extenso periodo de siete siglos, tanto la población como la organización política del territorio hispánico sufrieron profundos e irreversibles cambios, y quedaría marcado para siempre con la inconfundible impronta de la cultura y las costumbres romanas.
+
+        De hecho, tras el periodo de conquistas, Hispania se convirtió en una parte fundamental del Imperio romano, proporcionando a éste un enorme caudal de recursos materiales y humanos, y siendo durante siglos una de las partes más estables del mundo romano y cuna de algunos gobernantes del imperio.
+
+        El proceso de asimilación del modo de vida romano y su cultura por los pueblos sometidos se conoce como romanización. El elemento humano fue su más activo factor, y el ejército el principal agente integrador.
+
+        La sociedad hispana se organizó como la del resto del Imperio romano, en hombres libres y esclavos. Los hombres libres podían participar en el gobierno, votar en las elecciones y ser propietarios de tierras. Los esclavos, en cambio, no tenían ningún derecho y eran propiedad de algún hombre libre. Las mujeres podían ser libres o esclavas, pero no tenían los mismos derechos que los hombres.</p>
+
+        
+            <li><a href="https://es.wikipedia.org/wiki/Conquista_de_Hispania "target=_blank>Conquista de Hispania</a></li>
+            <li><a href="https://es.wikipedia.org/wiki/Arte_romano_en_Hispania "target=_blank>Arte romano en Hispania</a></li>
+        
+</div>
+		<script>    
+			var map = L.map('map',{center: [40.418889, -3.691944], zoom: 6});          
+			var osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'	});
+
+								
+			var marcadores = L.markerClusterGroup();  
+			
+			var Icon_cap = L.icon({
+						iconUrl:'Datos/icon.png', 
+						iconSize: [30, 40],
+						iconAnchor: [15,40], 
+						shadowUrl:'Datos/marker-shadow.png',
+						shadowSize: [15, 40],  
+						shadowAnchor: [0, 40],
+						popupAnchor: [0, -40]
+					});
+
+			
+			var cap_prov =  L.geoJson(capitales,{onEachFeature:function(feature, layer) {layer.setIcon(Icon_cap); layer.bindPopup (" <h2>"+feature.properties.Provincia+"</h2> <h4> "+feature.properties.capital+" </h4> <figure> <img src =Datos/"+feature.properties.foto+"> </figure> <h5> <a href="+feature.properties.link+"target=_blank > Más información<a> </h5>"); } });
+			
+			
+			L.MakiMarkers.accessToken = "pk.eyJ1IjoibXVuZG9naXMiLCJhIjoiY2luZzEycXlqMDA5aXd6bHlicHYxYzV0YyJ9.uqmc3KeB9xgYVT7fdbPj-A"; 
+    
+			var Icono = L.MakiMarkers.icon({icon: "museum", color: "#B40431", size: "l"}); 
+			
+			var capa_yacimientos = marcadores.addLayer(L.geoJSON(datos, {onEachFeature: function (feature, layer) {     layer.setIcon(Icono) ;          layer.bindPopup("<h3> Nombre del yacimiento:" +feature.properties.Nombre+" </h3><li>Tipo: "+feature.properties.Tipo+"</li><li>Tipo de Provincia: "+feature.properties.Tip_Prov+"</li><li>Provincia :"+feature.properties.Provincia+"</li>");
+            }  }));
+			  
+
+			function ventana(feature,layer){ layer.bindPopup("<h3>Provincia:"+feature.properties.NOMBRE+"</h3>");};
+
+			function funcionestilo(feature) {
+				switch (feature.properties.NOMBRE) {
+				case 'Baetica': return {fillColor: "#1b9e77","color":"black","opacity": 0.7, "weight": 3, "dashArray": '7',  "fillOpacity": 0.5};
+				case 'Tarraconensis': return {fillColor: "#d95f02","color":"black","opacity": 0.7, "weight": 3, "dashArray": '7',  "fillOpacity": 0.5};
+				case 'Lusitania': return {fillColor: "#7570b3","color":"black","opacity": 0.7, "weight": 3, "dashArray": '7',  "fillOpacity": 0.5};
+							}
+					};
+
+			var rom_prov = L.geoJSON(provincias, { onEachFeature:ventana, style:funcionestilo }).addTo(map);           
+			var ESRI = L.esri.basemapLayer('Imagery').addTo(map); 
+			var ESRI_NG = L.esri.basemapLayer('NationalGeographic');
+			var ESRI_T = L.esri.basemapLayer('Topographic');
+			var ESRI_DG = L.esri.basemapLayer('DarkGray');        
+			var Hispania =	L.imageOverlay("Datos/Hispania.jpg", [[35.247,-11.050], [44.506,5.047]], {opacity:0.5}); 
+			
+			var estilo_vias = {   "color":"red",
+                       "opacity": 0.5,
+                       "weight": 7,
+                       "dashArray": '9'
+                  };
+			
+			function viaspopup(feature, layer){layer.bindPopup("<h3>" +feature.properties.VIAS+ "</h3>");};
+
+			var vias = new L.Shapefile('Datos/viasromanas.zip', {style:estilo_vias, onEachFeature: viaspopup });
+		
+			
+			var overlays = [{
+				groupName : "Yacimientos Romanos",	
+				layers:{"Capitales de provincias": cap_prov,
+						"Yacimientos": capa_yacimientos}}, 
+							{
+								groupName : "Provincias Romanas",		
+								layers :{ "Provincias Romanas GeoJSON" : rom_prov,
+										 "Mapa Antiguo" : Hispania	}},
+							
+ 				{groupName : "Vias Romanas", expanded : true,layers : { "Vias Romanas" : vias } }
+						   ];
+			
+						
+			var basemaps  = [
+					{ groupName : "Mapa Base OSM",
+						layers    : {"Open Stret Map" :  osm	
+							}
+						},  {
+					   groupName : "Mapa Base ESRI",
+						layers    : {	"NationalGeographic" : ESRI_NG,
+									  "Topographic" : ESRI_T,
+											  "Imagery"  : ESRI,
+											  "DarkGary": ESRI_DG
+							}
+						},   ];
+
+			var options = { 
+                        container_width : "250px", 
+                        group_maxHeight : "80px", 
+                        exclusive     : false, 
+                        collapsed : true, 
+                        position: 'topright' 
+           }; 
+
+			
+			var capas = L.Control.styledLayerControl(basemaps, overlays, options); 
+			map.addControl(capas); 
+
+			//buscador
+			
+			var buscar_marcador = new L.Control.Search({
+						position: 'topleft',
+						initial: false,
+						textPlaceholder: 'Buscar yacimiento',
+						layer: capa_yacimientos,
+						propertyName: 'Nombre',
+						circleLocation:true,
+						collapsed: true
+						});        
+			map.addControl(buscar_marcador);
+			
+			//imprimir
+			
+			L.easyPrint({
+					   title: 'Imprimir',
+					   position: 'topleft',
+					   elementsToHide: 'header'
+        			}).addTo(map);
+
+			//sidebar 
+			var sidebar = L.control.sidebar('sidebar', {
+						   position: 'left'
+						});
+
+						map.addControl(sidebar);
+
+						setTimeout(function () {
+							sidebar.show();
+						}, 500);
+
+						map.on('click', function () {
+							sidebar.hide();
+						})
+			
+			
+			//Escala
+			L.control.scale({position:'bottomleft',metric: true,imperial: false, maxWidth: 100}).addTo(map);
+
+			//Método fly()
+			var CoorTarraco = [41.1147,1.2593]
+			var CoorEmerita= [ 38.9168,-6.3388]
+			var CoorCorduba = [ 37.8848,-4.7765]
+			
+			document.getElementById('Tarraco').onclick = function () {map.flyTo( CoorTarraco, 18); };
+			document.getElementById('Emerita Augusta').onclick =function(){map.flyTo( CoorEmerita, 18 );};
+			document.getElementById('Corduba').onclick = function (){map.flyTo(CoorCorduba, 18, {duration: 17}); };
+
+			
+			//leyenda
+			var leyenda = L.control({position: 'bottomright'}); 			
+
+ 			leyenda.onAdd = function (map) {
+						var div = L.DomUtil.create('div', 'leyendaestilo');
+						div.innerHTML +='<img src="Datos/leyenda.png" width="150" height="180" alt="leyenda" />';
+						return div;
+							};
+ 			leyenda.addTo(map);
+
+			
+
+		</script>
+    
+</body>
+</html>
